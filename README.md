@@ -7,6 +7,8 @@ This is a very simple countdown timer I build with my daughter every year in the
 **Note:** You can fill `daysPreset` and `secondsPreset` in based on another countdown timer such as [Halloween](https://days.to/until/halloween), [Thanksgiving](https://days.to/until/thanksgiving), or [Christmas](https://days.to/until/christmas). 
 ## Build/Run
 Nothing new here, just open the file in the Arduino IDE and upload it [(Reference)](https://www.arduino.cc/en/Main/Howto). Every time you reboot this, it will reset the countdown to start from the presets defined above, so be ready to change those 😅.
+## Limitations
+Since the `millis()` timer elapsed time is stored in an `unsigned long`, this timer will only work for 2^32 -1 (4,294,967,295) milliseconds which is about 49.7 days. After that time, you will have to load new preset times and restart the device.
 ## Troubleshooting
 If I had any sense, I would have written down some troubleshooting tips as they occurred. Needless to say... I did not. If the LCD has a row of white boxes, the wiring is not correct. If you get some jumbled up mess on the screen, also probably not wired correctly. Don't forget to adjust the potentiometer until it looks right!
 ## Enhancements
