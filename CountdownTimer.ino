@@ -24,12 +24,12 @@ LiquidCrystal lcd(2, 3, 4, 5, 6, 7);
 
 const String nameOfDay            = "Halloween";
 //                                  (d)
-const unsigned long daysPreset    = 67L;
+const unsigned long daysPreset    = 66L;
 unsigned long daysUntil           = daysPreset;
 unsigned long lastDaysUntil       = daysPreset;
+unsigned long dayNumber           = 1L;
 //                                  (h)              (mm)         (ss)
-const unsigned long secondsPreset = (15L) *60L*60L + (21L) *60L + (0L);
-unsigned long secondsUntil        = secondsPreset;
+unsigned long secondsPreset       = (15L) *60L*60L + (50L) *60L + (0L);
 const unsigned long secondsInDay  = 24L * 60L * 60L;
 bool firstScan                    = true;
 
@@ -37,20 +37,18 @@ void setup() {
   lcd.begin(16, 2);
 }
 
-void loop() { 
-  lastDaysUntil = daysUntil;
-  unsigned long daysUntil = daysPreset + secondsPreset/60L/60L/24L - millis()/1000L/60L/60L/24L;
-  
-  //Reset seconds every time a new day starts
-  if (daysUntil != lastDaysUntil)  {
-    secondsUntil = secondsInDay;
+void loop() {
+  if (secondsPreset*1000L*dayNumber - millis() <= 0L) {
+    daysUntil -= 1L;
+    secondsPreset = secondsInDay;
+    dayNumber += 1L;
   } 
-
+  
   //display
   lcd.setCursor(0,0);
   lcd.print(nameOfDay + ": " + String(daysUntil) + " Dy");
   lcd.setCursor(0,1);
-  lcd.print(String(secondsUntil - millis()/1000L) + " Seconds");
+  lcd.print(String(secondsPreset - millis()/1000L) + " Seconds");
 
   firstScan = false;
 }
