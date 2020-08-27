@@ -24,13 +24,14 @@ LiquidCrystal lcd(2, 3, 4, 5, 6, 7);
 
 const String nameOfDay            = "Halloween";
 //                                  (d)
-const unsigned long daysPreset    = 65L;
+const unsigned long daysPreset    = 64L;
 unsigned long daysUntil           = daysPreset;
 unsigned long lastDaysUntil       = daysPreset;
 unsigned long dayNumber           = 1L;
 //                                  (h)             (mm)         (ss)
-unsigned long secondsPreset       = (2L) *60L*60L + (54L) *60L + (0L);
+unsigned long secondsPreset       = (16L) *60L*60L + (17L) *60L + (0L);
 const unsigned long secondsInDay  = 24L * 60L * 60L;
+unsigned long millisLeftInDay = secondsPreset * 1000L;
 bool firstScan                    = true;
 
 void setup() { 
@@ -38,7 +39,10 @@ void setup() {
 }
 
 void loop() {
-  if (secondsPreset*1000L*dayNumber - millis() <= 10L) {
+  millisLeftInDay = secondsPreset*1000L*dayNumber - millis();
+
+  if (millisLeftInDay <= 10L) {
+    delay(millisLeftInDay + 1L);
     daysUntil -= 1L;
     secondsPreset = secondsInDay;
     dayNumber += 1L;
