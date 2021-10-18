@@ -22,36 +22,56 @@
 //               (RS E  D4 D5 D6 D7)
 LiquidCrystal lcd(2, 3, 4, 5, 6, 7);
 
-const String nameOfDay            = "Halloween";
-//                                  (d)
-const unsigned long daysPreset    = 62L;
-unsigned long daysUntil           = daysPreset;
-unsigned long lastDaysUntil       = daysPreset;
-unsigned long dayNumber           = 1L;
-//                                  (h)             (mm)         (ss)
-unsigned long secondsPreset       = (16L) *60L*60L + (13L) *60L + (0L);
-const unsigned long secondsInDay  = 24L * 60L * 60L;
-unsigned long millisLeftInDay = secondsPreset * 1000L;
-bool firstScan                    = true;
+const String nameOfDay             = "Christmas";
+
+//                                   (d)
+const unsigned long daysPreset     = 20L;
+unsigned long daysUntil            = daysPreset;
+unsigned long lastDaysUntil        = daysPreset;
+unsigned long dayNumber            = 1L;
+
+//                                    (h)             (mm)         (ss)
+const unsigned long mSecondsPreset = ((4L) *60L*60L + (59L) *60L + (0L)) * 1000L;
+unsigned long mSecondsInToday      = mSecondsPreset;
+const unsigned long mSecondsInDay  = 24L * 60L * 60L * 1000L;
+const unsigned long mSecondsTotal  = daysUntil * mSecondsInDay + mSecondsPreset;
+
+bool firstDay                      = true;
+bool done                          = false;
+
+String messageLine1;
+String messageLine2;
 
 void setup() { 
   lcd.begin(16, 2);
 }
 
 void loop() {
-  millisLeftInDay = secondsPreset*1000L*dayNumber - millis();
+  if (firstDay && millis() > mSecondsPreset) {
+    dayNumber += 1;
+    daysUntil -= 1;
+    firstDay = false;
+    mSecondsInToday = mSecondsInDay;
+  } else if (millis() > mSecondsPreset && millis() - mSecondsPreset > (dayNumber - 1L) * mSecondsInDay) {
+    dayNumber += 1;
+    daysUntil -= 1;
+    mSecondsInToday = mSecondsInDay;
+  }
 
-  if (millis() > secondsInDay * 1000L * dayNumber) {
-    daysUntil -= 1L;
-    secondsPreset = secondsInDay;
-    dayNumber += 1L;
-  } 
+  if (millis() >= mSecondsTotal) {
+    done = true;
+  }
+
+  if (done) {
+    messageLine1 = "It's " + nameOfDay + "!";
+  } else {
+    messageLine1 = nameOfDay + " " + String(daysUntil) + " Day";
+    messageLine2 = String(( mSecondsPreset + mSecondsInToday * (dayNumber - 1L) - millis() )/1000L) + " Seconds";
+  }
   
   //display
   lcd.setCursor(0,0);
-  lcd.print(nameOfDay + ": " + String(daysUntil) + " Dy");
+  lcd.print(messageLine1);
   lcd.setCursor(0,1);
-  lcd.print(String(secondsPreset*dayNumber - millis()/1000L) + " Seconds");
-
-  firstScan = false;
+  lcd.print(messageLine2);
 }
